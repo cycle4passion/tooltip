@@ -42,11 +42,10 @@
 
 <style>
 	button {
-		--btn-size: 2rem;
-		font-size: calc(var(--btn-size) - 0.75rem);
-		border-radius: var(--btn-size);
-		height: var(--btn-size);
-		width: var(--btn-size);
+		font-size: calc(2rem - 0.75rem);
+		border-radius: 2rem;
+		height: 2rem;
+		width: 2rem;
 		display: grid;
 		border: 2px solid var(--bg);
 		place-content: center;
