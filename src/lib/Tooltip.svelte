@@ -22,8 +22,10 @@
 
 	const id = generateUniqueId();
 	let ttContainer: HTMLDivElement;
+	let renderedSide = $state();
 
 	type Props = {
+		event: 'click' | 'hover';
 		side?: 'top' | 'right' | 'bottom' | 'left';
 		arrow?: boolean;
 		offset?: string;
@@ -37,6 +39,7 @@
 	};
 
 	let {
+		event = 'hover',
 		side = 'top',
 		arrow = true,
 		arrowsize = '0.5em',
@@ -92,13 +95,44 @@
 			tooltip.style.setProperty('--ttoffset', offset);
 			tooltip.style.setProperty('--ttslide', `-${slide}`);
 
+			// Although we use built in fallbacks for anchor positioning in primary plane, secondart plane could need adjusted manually.
+
+			// Check if position-try-fallbacks is used
+			const computedStyle = getComputedStyle(tooltip);
+			const tooltiprect = tooltip.getBoundingClientRect();
+			const triggerrect = trigger.getBoundingClientRect();
+			const viewportWidth = window.innerWidth;
+			const viewportHeight = window.innerHeight;
+
+			if (tooltiprect.bottom > triggerrect.top) {
+				// top
+				renderedSide = 'top';
+				tooltip.classList.remove('top');
+				tooltip.classList.add('bottom');
+			} else if (tooltiprect.top < triggerrect.bottom) {
+				// bottom
+				renderedSide = 'bottom';
+				tooltip.classList.remove('bottom');
+				tooltip.classList.add('top');
+			} else if (tooltiprect.right > triggerrect.left) {
+				// left
+				renderedSide = 'left';
+				tooltip.classList.remove('left');
+				tooltip.classList.add('right');
+			} else if (tooltiprect.left < triggerrect.right) {
+				// right
+				renderedSide = 'right';
+				tooltip.classList.remove('right');
+				tooltip.classList.add('left');
+			}
+
 			function tooltipShow(event: Event) {
 				if (event instanceof MouseEvent || event instanceof FocusEvent) {
 					// allows for other events on trigger not fire tooltipShow
 					tooltip?.setAttribute('aria-hidden', 'false');
 					tooltip?.showPopover();
 					if (onShow) onShow();
-					if (onToggle) ontoggle();
+					if (onToggle) onToggle();
 				}
 			}
 
@@ -119,18 +153,28 @@
 				}
 			}
 
+			function noClick(event: MouseEvent) {
+				event.preventDefault();
+			}
+
 			/* Event listeners for mousover/focus and disabling click */
-			trigger.addEventListener('mouseenter', tooltipShow);
+			if (event === 'hover') {
+				trigger.addEventListener('mouseenter', tooltipShow);
+				trigger.addEventListener('mouseleave', tooltipHide);
+				trigger.addEventListener('click', noClick);
+			}
 			trigger.addEventListener('focus', tooltipShow);
-			trigger.addEventListener('mouseleave', tooltipHide);
 			trigger.addEventListener('blur', tooltipHide);
 		}
 
 		// cleanup to prevent memory leaks
-		return (tooltipShow: () => void, tooltipHide: () => void, noclick: () => void) => {
-			trigger.removeEventListener('mouseenter', tooltipShow);
+		return (tooltipShow: () => void, tooltipHide: () => void, noClick: () => void) => {
+			if (event === 'hover') {
+				trigger.removeEventListener('mouseenter', tooltipShow);
+				trigger.removeEventListener('mouseleave', tooltipHide);
+				trigger.removeEventListener('click', noClick);
+			}
 			trigger.removeEventListener('focus', tooltipShow);
-			trigger.removeEventListener('mouseleave', tooltipHide);
 			trigger.removeEventListener('blur', tooltipHide);
 		};
 	});
@@ -252,12 +296,18 @@
 		Missing child trigger and/or tooltip content.
 	{/if}
 </div>
+{side}{renderedSide}
 
 <style>
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
 	:global(body) {
 		height: 50vh;
-		display: grid;
-		place-items: center;
+		/* display: grid;
+		place-items: center; */
 		position: relative;
 		font-family: system-ui, serif;
 		line-height: 1.4;
@@ -344,6 +394,10 @@
 			--ttmovex: 0;
 			--ttmovey: calc(-1 * var(--ttslide));
 			position-area: top;
+			position-try-fallbacks:
+				flip-block,
+				flip-inline,
+				flip-block flip-inline;
 			margin-bottom: calc(var(--ttoffset) + var(--arrowsize));
 			&::before {
 				top: 100%;
@@ -356,6 +410,10 @@
 			--ttmovex: var(--arrowsize);
 			--ttmovey: 0;
 			position-area: right;
+			position-try-fallbacks:
+				flip-inline,
+				flip-block,
+				flip-inline flip-block;
 			margin-top: var(--ttoffset);
 			margin-left: calc(var(--ttoffset) + var(--arrowsize));
 			&.arrow::before {
@@ -369,6 +427,10 @@
 			--ttmovex: 0;
 			--ttmovey: var(--arrowsize);
 			position-area: bottom;
+			position-try-fallbacks:
+				flip-block,
+				flip-inline,
+				flip-block flip-inline;
 			margin-top: calc(var(--ttoffset) + var(--arrowsize));
 			&.arrow::before {
 				top: calc(0% - (2 * var(--arrowsize)));
@@ -380,6 +442,10 @@
 			--ttmovex: calc(-1 * var(--ttslide));
 			--ttmovey: 0;
 			position-area: left;
+			position-try-fallbacks:
+				flip-inline flip-block,
+				flip-block,
+				flip-inline;
 			margin-top: calc(var(--ttoffset));
 			margin-right: calc(var(--ttoffset) + var(--arrowsize));
 			&.arrow::before {

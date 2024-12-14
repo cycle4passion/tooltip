@@ -33,13 +33,6 @@
 	</div>
 </Tooltip>
 
-<Tooltip>
-	<button class="trigger">?</button>
-	<div class="tooltip">
-		<p>aaa</p>
-	</div>
-</Tooltip>
-
 <style>
 	button {
 		font-size: calc(2rem - 0.75rem);
