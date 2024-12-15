@@ -1,19 +1,17 @@
+<!-- 
+@component
 ## Tooltip
 Wrapping Svelte 5 TS component for creating a tooltip via Snippet children.
-- easy implementation using Svelte snippet children
-- No Dependencies, UI library, or Tailwind needed
-- JS Light, CSS Heavy
-- Leverages new Popover API, Anchor API, Position API replacing heavier [svelte-floating-ui](https://github.com/fedorovvvv/svelte-floating-ui?tab=readme-ov-file)
 
 ### Snippet Requirements
-1. Include a trigger element identified by the class "`trigger`"
-1. Include tooltip element identified by the class "`tooltip`" with attribute `popover="auto"`.
+1. Include a trigger element identified by the class "`.trigger`"
+1. Include tooltip element identified by the class "`.tooltip`" with attribute `popover="auto"`.
 
 ### Usage
-```html
+```svelte
 <Tooltip>
-	<div class="trigger">Hover me</div>
-	<div class="tooltip" popover="auto">This is a tooltip</div>
+    <div class="trigger">Hover me</div>
+    <div class="tooltip" popover="auto">This is a tooltip</div>
 </Tooltip>
 ```
 
@@ -26,14 +24,14 @@ Wrapping Svelte 5 TS component for creating a tooltip via Snippet children.
 - `slide`: string - translate animation distance of the tooltip. Default is `"2em"`.
 - `css`: Record<string, any> - Custom css for the tooltip. Default is
 ```js
-  css = {
-	background: 'black',
-	color: 'white',
-	padding: '1em',
-	'border-radius': '1em',
-	'font-size': '1em',
-	'max-width': '300px',
-	'box-shadow': '0 8px 16px rgba(0, 0, 0, 0.2)'
+css = {
+    background: 'black',
+    color: 'white',
+    padding: '1em',
+    'border-radius': '1em',
+    'font-size': '1em',
+    'max-width': '300px',
+    'box-shadow': '0 8px 16px rgba(0, 0, 0, 0.2)'
   }
 ```
   - `animation`: false | {} | TooltipAnimations - Animation for show and hide. Default is 
@@ -47,7 +45,7 @@ Wrapping Svelte 5 TS component for creating a tooltip via Snippet children.
 				transform: 'translateX(0) translateY(0)'
 			}
 		},
-		out: {
+    out: {
 			delay: 100,
 			duration: 100,
 			props: {
@@ -61,3 +59,4 @@ Wrapping Svelte 5 TS component for creating a tooltip via Snippet children.
 - `onShow`: () => void - Callback function when tooltip is shown, default is `() => {}`.
 - `onHide` - () => void - Callback function when tooltip is hidden, default is `() => {}`.
 - `onToggle` - () => void - Callback function when tooltip is toggled, default is `() => {}`.
+``` -->

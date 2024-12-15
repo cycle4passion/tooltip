@@ -1,39 +1,27 @@
 <script lang="ts">
-	import Tooltip from '$lib/Tooltip.svelte';
-	let side: 'top' | 'right' | 'bottom' | 'left' = 'top';
+	import Tooltip from './Tooltip.svelte';
 </script>
 
-<div>
-	<label>
-		<input type="radio" bind:group={side} value="top" />
-		Top
-	</label>
-	<label>
-		<input type="radio" bind:group={side} value="right" />
-		Right
-	</label>
-	<label>
-		<input type="radio" bind:group={side} value="bottom" />
-		Bottom
-	</label>
-	<label>
-		<input type="radio" bind:group={side} value="left" />
-		Left
-	</label>
-</div>
-
-<Tooltip {side}>
+<Tooltip animation={false} css={{ background: 'red' }}>
 	<button class="trigger">?</button>
-	<div class="tooltip">
-		<p>
-			The sun dipped, fiery orange melting into buttery yellow. Maya mirrored the hues on canvas,
-			each stroke bittersweet – fleeting beauty, a day gone. Yet, she painted on, for in those
-			streaks lay the promise of a new dawn.
-		</p>
+	<div class="tooltip" popover="auto">
+		The sun dipped, fiery orange melting into buttery yellow. Maya mirrored the hues on canvas, each
+		stroke bittersweet – fleeting beauty, a day gone. Yet, she painted on, for in those streaks lay
+		the promise of a new dawn.
 	</div>
 </Tooltip>
 
 <style>
+	:global(body) {
+		padding-top: 50vh;
+		height: 2500px;
+		display: grid;
+		justify-content: center;
+		position: relative;
+		font-family: system-ui, serif;
+		line-height: 1.4;
+	}
+
 	button {
 		font-size: calc(2rem - 0.75rem);
 		border-radius: 2rem;
